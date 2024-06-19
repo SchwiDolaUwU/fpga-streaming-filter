@@ -8,11 +8,11 @@ CXXFLAGS += -g -std=c++17 -Wall -O2 -lrt
 
 all: $(wildcard *)
 	mkdir -p $(BUILD_DIR)
-	g++ $(CXXFLAGS) host.cpp StreamInterface.cpp -o $(BUILD_DIR)/app.exe -D HWTARGET -I${XILINX_XRT}/include/ -L$(XILINX_XRT)/lib -lxrt_coreutil -pthread
+	g++ $(CXXFLAGS) FPGAHandler.h host.cpp StreamInterface.cpp -o $(BUILD_DIR)/app.exe -D HWTARGET -I${XILINX_XRT}/include/ -L$(XILINX_XRT)/lib -lxrt_coreutil -pthread
 
 swsim: $(wildcard *) $(KERNEL_DIR)/kernel.cpp
 	mkdir -p $(BUILD_DIR)
-	g++ $(CXXFLAGS) host.cpp StreamInterfaceSw.cpp $(KERNEL_DIR)/kernel.cpp -o $(BUILD_DIR)/app.exe -I${XILINX_XRT}/include/ -L$(XILINX_XRT)/lib -lxrt_coreutil -pthread
+	g++ $(CXXFLAGS) FPGAHandler.h host.cpp StreamInterfaceSw.cpp $(KERNEL_DIR)/kernel.cpp -o $(BUILD_DIR)/app.exe -I${XILINX_XRT}/include/ -L$(XILINX_XRT)/ -pthread
 
 
 clean:
