@@ -60,6 +60,7 @@ class FPGAHandler   //singleton class
 				resultMapCnt = queueMapCnt;
                 queueMapCnt = 0;
 		        
+                key = 0;
                 delete[] christoffelInputArray;
                 delete[] resultArray;
             }
@@ -69,14 +70,14 @@ class FPGAHandler   //singleton class
             :queueMap(MAX_ARRAY_LEN), resultMap(MAX_ARRAY_LEN)
         {
             key = 0;
-            threshold = 1; //change threshold
+            threshold = 100; //change threshold
             ifc = StreamInterface::getInstance();
             queueMapCnt = 0;
             resultMapCnt = 0;
         }
-        
+
         FPGAHandler(const FPGAHandler& obj) = delete; //For singleton class: delete copy constructor
-        
+
         int send(double dst[64], double const pos[4], double const spin){
             mu.lock();
 
@@ -87,12 +88,13 @@ class FPGAHandler   //singleton class
 
             queueMap[key] = christoffelInput;
             queueMapCnt++;
-            update(); //update and see if can send
-
             int returnKey = key; //prevent other thread from changing the value of key when unlock
             key++;
+
+            update(); //update and see if can send
+
             mu.unlock();
-            
+
             return  returnKey; //as key
         }
         bool receive(double dst[64], int key){
@@ -114,14 +116,14 @@ class FPGAHandler   //singleton class
                 return false; //indicate no result
             }
         }
-        
+
         static FPGAHandler* getInstance() //getInstance for Singleton class
         {
           // If there is no instance of class
           // then we can create an instance.
-          if (instancePtr == NULL) 
+          if (instancePtr == NULL)
           {
-            instancePtr = new FPGAHandler(); 
+            instancePtr = new FPGAHandler();
 
 
             return instancePtr; 
